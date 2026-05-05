@@ -1244,6 +1244,62 @@
             saveAndContinue("");
         }
 
+        // ============= 관대한 채점 (유사도 기반) =============
+        // 한글 자모 분해해서 글자 단위 비교 → 절반 이상 비슷하면 통과
+        function decomposeHangul(str) {
+            const result = [];
+            for (const ch of str) {
+                const code = ch.charCodeAt(0) - 0xAC00;
+                if (code >= 0 && code <= 11171) {
+                    const cho = Math.floor(code / 588);
+                    const jung = Math.floor((code % 588) / 28);
+                    const jong = code % 28;
+                    result.push(cho, jung + 100, jong + 200); // 자모를 구분되게
+                } else {
+                    result.push(ch);
+                }
+            }
+            return result;
+        }
+
+        function similarity(a, b) {
+            if (!a || !b) return 0;
+            const aJamo = decomposeHangul(a);
+            const bJamo = decomposeHangul(b);
+            // 짧은 쪽 기준으로 매칭되는 자모 비율
+            const shorter = aJamo.length < bJamo.length ? aJamo : bJamo;
+            const longer = aJamo.length < bJamo.length ? bJamo : aJamo;
+            if (shorter.length === 0) return 0;
+
+            let matches = 0;
+            const used = new Set();
+            for (const ch of shorter) {
+                for (let i = 0; i < longer.length; i++) {
+                    if (!used.has(i) && longer[i] === ch) {
+                        matches++;
+                        used.add(i);
+                        break;
+                    }
+                }
+            }
+            return matches / longer.length;
+        }
+
+        function isPronunciationOK(stt, target, original) {
+            const sttClean = (stt || '').replace(/\s+/g, '');
+            const targetClean = (target || '').replace(/\s+/g, '');
+            const originalClean = (original || '').replace(/\s+/g, '');
+            if (!sttClean) return false;
+
+            // 1) 완전 포함 → 통과
+            if (sttClean.includes(targetClean)) return true;
+            // 2) 원단어로도 인식되면 통과 (받아쓰기는 원단어로 인식되는 경우 많음)
+            if (originalClean && sttClean.includes(originalClean)) return true;
+            // 3) 자모 유사도 60% 이상이면 통과 (관대한 기준)
+            if (similarity(sttClean, targetClean) >= 0.6) return true;
+            if (originalClean && similarity(sttClean, originalClean) >= 0.6) return true;
+            return false;
+        }
         // ============= 자기평가 =============
         function showSelfEval() {
             document.getElementById('self-eval').style.display = 'block';
@@ -1327,9 +1383,8 @@
 
         async function saveAndContinue(base64Audio) {
             const q = quizList[currentQuestionIndex] || {};
-            const safeStt = sttResultText ? sttResultText.replace(/\s+/g, '') : "없음";
-            const targetClean = (q.targetPronunciation || '').replace(/\s+/g, '');
-            const isPass = safeStt.includes(targetClean);
+            // 관대한 채점: 정답발음 또는 원단어와 유사하게만 들어가도 통과
+            const isPass = isPronunciationOK(sttResultText, q.targetPronunciation, q.originalWord);
 
             // 피드백 화면 먼저 보여주기 (저장은 백그라운드)
             document.getElementById('feedback-concept-text').innerText = q.similarWords || '';
