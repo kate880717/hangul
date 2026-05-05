@@ -1474,15 +1474,17 @@
         }
 
         // ============= 성찰 (선택형 정리) =============
-        // 버튼 클릭 시 같은 그룹에서 하나만 선택되도록
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('reflect-btn')) {
-                const group = e.target.closest('.reflect-options');
-                if (group) {
-                    group.querySelectorAll('.reflect-btn').forEach(b => b.classList.remove('selected'));
-                    e.target.classList.add('selected');
-                }
-            }
+        // 버튼 클릭 시 같은 그룹에서 하나만 선택되도록 (DOM 로드 후 등록)
+        window.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.reflect-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    const group = e.target.closest('.reflect-options');
+                    if (group) {
+                        group.querySelectorAll('.reflect-btn').forEach(b => b.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                    }
+                });
+            });
         });
 
         async function finishReflection() {
