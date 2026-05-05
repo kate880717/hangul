@@ -1331,10 +1331,13 @@
             const targetClean = (q.targetPronunciation || '').replace(/\s+/g, '');
             const isPass = safeStt.includes(targetClean);
 
-            if (GAS_URL && GAS_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-                document.getElementById('loading-overlay').style.display = 'flex';
-                document.getElementById('loading-msg').innerText = "구글 시트에 멋지게 기록하는 중이에요... ✨";
+            // 피드백 화면 먼저 보여주기 (저장은 백그라운드)
+            document.getElementById('feedback-concept-text').innerText = q.similarWords || '';
+            document.getElementById('feedback-similar-words').innerText = q.similarWords || "이와 비슷한 단어들이 많이 있어요!";
+            showScreen('screen-feedback');
 
+            // 백그라운드 저장 (로딩 표시 없음)
+            if (GAS_URL && GAS_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
                 const payload = {
                     studentName: currentStudent,
                     originalWord: q.originalWord || '',
@@ -1347,23 +1350,13 @@
                     attemptCount: attemptCount + 1
                 };
 
-                try {
-                    await fetch(GAS_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (e) {
-                    console.error("데이터 저장 실패", e);
-                }
-                document.getElementById('loading-overlay').style.display = 'none';
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                }).catch(e => console.error("데이터 저장 실패", e));
             }
-
-            // 피드백 화면
-            document.getElementById('feedback-concept-text').innerText = q.similarWords || '';
-            document.getElementById('feedback-similar-words').innerText = q.similarWords || "이와 비슷한 단어들이 많이 있어요!";
-            showScreen('screen-feedback');
         }
 
         function nextQuestion() {
