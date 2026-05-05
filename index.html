@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>소리 나는 대로 읽고 쓰기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Do+Hyeon&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         html,
         body {
@@ -22,10 +22,9 @@
             touch-action: pan-x pan-y;
         }
 
-        /* 발음기호 등 Jua 미지원 글자용 fallback */
+        /* 발음기호/단어 - 깔끔한 한글 전체 지원 폰트 */
         .ipa, .pron-symbol {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: 700;
+            font-family: 'Do Hyeon', 'Jua', sans-serif;
         }
 
         #app-container {
@@ -554,21 +553,21 @@
 
         <!-- 2. 개념 학습 화면 -->
         <div id="screen-concept" class="screen"
-            style="background: linear-gradient(160deg, #E0F7FA 0%, #ffffff 100%); justify-content: flex-start; padding-top: 2vh;">
-            <div style="width:100%; text-align:center; margin-bottom:1vh;">
-                <h2 style="margin:0; font-size: clamp(22px, 4vh, 44px); color:#00838F;">💡 오늘 배울 발음 규칙이에요!</h2>
-                <p style="font-size: clamp(14px, 2.2vh, 24px); color:#777; margin: 0.3vh 0;">모두 읽고 퀴즈를 풀어봐요 😊</p>
+            style="background: linear-gradient(160deg, #E0F7FA 0%, #ffffff 100%);">
+            <div style="width:100%; text-align:center; margin-bottom:1.5vh;">
+                <h2 style="margin:0; font-size: clamp(24px, 4.5vh, 48px); color:#00838F;">💡 오늘 배울 발음 규칙이에요!</h2>
+                <p style="font-size: clamp(15px, 2.4vh, 26px); color:#777; margin: 0.5vh 0;">모두 읽고 퀴즈를 풀어봐요 😊</p>
             </div>
             <div id="concept-cards-container"
-                style="width:92%; display:flex; flex-direction:column; gap:1vh; margin-bottom:1.5vh;"></div>
-            <button class="btn primary" style="background:#4ECDC4; font-size:clamp(20px,3.5vh,38px); padding:1.3vh 3vw; margin:0.5vh;"
+                style="width:92%; display:flex; flex-direction:column; gap:1.2vh; margin-bottom:2vh;"></div>
+            <button class="btn primary" style="background:#4ECDC4; font-size:clamp(20px,3.8vh,40px); padding:1.5vh 4vw; margin:0.5vh;"
                 onclick="startQuiz()">문제 풀러 가기 ➡️</button>
         </div>
 
 
         <!-- 3. 퀴즈 화면 -->
         <div id="screen-quiz" class="screen"
-            style="background: linear-gradient(160deg, #EDE7F6 0%, #ffffff 100%); justify-content: flex-start; padding-top: 2.5vh;">
+            style="background: linear-gradient(160deg, #EDE7F6 0%, #ffffff 100%);">
             <div style="width:92%; display:flex; justify-content:space-between; align-items:center; margin-bottom:2vh;">
                 <button class="icon-btn" onclick="goHome()">🏠</button>
                 <div class="progress-display" id="quiz-progress">문제 1 / 12</div>
@@ -593,8 +592,8 @@
         </div>
 
         <!-- 4. 녹음 및 받아쓰기 화면 -->
-        <div id="screen-record" class="screen" style="justify-content: flex-start; padding-top: 1.5vh;">
-            <div style="width:92%; display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5vh;">
+        <div id="screen-record" class="screen">
+            <div style="width:92%; display:flex; justify-content:space-between; align-items:center; margin-bottom:1vh;">
                 <button class="icon-btn" onclick="goHome()">🏠</button>
                 <div class="progress-display" id="record-progress">문제 1 / 1</div>
                 <button class="icon-btn" onclick="document.getElementById('tts-toggle').click()">🔊</button>
@@ -602,12 +601,12 @@
 
             <!-- 원래 단어 (글자별 span) -->
             <div id="record-word-box"
-                style="background: white; border: 0.5vh solid #FF6B6B; border-radius: 2.5vh; padding: 1.5vh 5vw; margin: 0.5vh 0; box-shadow: 0 0.5vh 2vh rgba(255,107,107,0.15);">
-                <p id="record-original-word"
-                    style="font-size: clamp(40px, 8vh, 80px); font-weight:bold; color:#FF6B6B; margin:0;"></p>
+                style="background: white; border: 0.5vh solid #FF6B6B; border-radius: 2.5vh; padding: 2vh 5vw; margin: 0.5vh 0; box-shadow: 0 0.5vh 2vh rgba(255,107,107,0.15);">
+                <p id="record-original-word" class="pron-symbol"
+                    style="font-size: clamp(44px, 9vh, 90px); font-weight:bold; color:#FF6B6B; margin:0;"></p>
             </div>
             <!-- 발음 힌트 -->
-            <p id="record-hint" style="font-size: clamp(18px, 2.8vh, 32px); color:#888; margin: 0.3vh 0;">
+            <p id="record-hint" style="font-size: clamp(18px, 3vh, 32px); color:#888; margin: 0.5vh 0 1vh 0;">
                 ➡️ 이렇게 소리 나요: <strong class="pron-symbol" style="color:#4ECDC4;">[궁물]</strong>
             </p>
 
@@ -628,10 +627,10 @@
                 <!-- 튜토리얼 + 녹음 버튼 -->
                 <div class="tutorial-hint" id="record-tutorial">💡 아래 🎤 버튼을 누르고 큰 소리로 읽어보세요!</div>
 
-                <div id="mic-btn-container" style="display:flex; justify-content:center; gap: 2vw; margin: 0.3vh 0;">
-                    <button class="btn" id="start-rec-btn" style="background-color: #4CAF50; color:white; padding: 1.5vh 4vw;"
+                <div id="mic-btn-container" style="display:flex; justify-content:center; gap: 2vw; margin: 0.5vh 0;">
+                    <button class="btn" id="start-rec-btn" style="background-color: #4CAF50; color:white; padding: 1.8vh 5vw;"
                         onclick="startRecording()">🎤 녹음 시작</button>
-                    <button class="btn" id="stop-rec-btn" style="background-color: #FF5252; color:white; display:none; padding: 1.5vh 4vw;"
+                    <button class="btn" id="stop-rec-btn" style="background-color: #FF5252; color:white; display:none; padding: 1.8vh 5vw;"
                         onclick="stopRecordingClick()">⏹️ 녹음 종료</button>
                 </div>
 
@@ -652,7 +651,7 @@
                     <span class="star" data-value="5" onclick="setStars(5)">⭐</span>
                 </div>
                 <div class="star-feedback" id="star-feedback"></div>
-                <div id="eval-actions" style="display:none; flex-wrap:wrap; gap:1.5vw; justify-content:center; margin-top:0.5vh;">
+                <div id="eval-actions" style="display:none; flex-wrap:wrap; gap:1.5vw; justify-content:center; margin-top:0.8vh;">
                     <button class="btn compact-btn" style="background:#FFA500; color:white;" onclick="retryRecording()">🔄 다시 녹음</button>
                     <button class="btn compact-btn" style="background:#5DADE2; color:white;" onclick="playMyRecording()">▶️ 다시 듣기</button>
                     <button class="btn primary compact-btn" onclick="goNextFromRecord()">✅ 다음으로</button>
