@@ -751,7 +751,14 @@ const WORD_ART = {
 };
 
 function getWordArt(word) {
-    return WORD_ART[word] || '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="#FFD93D"/><text x="50" y="62" font-size="32" text-anchor="middle" fill="#fff">?</text></svg>';
+    if (!word) return WORD_ART["꽃이"];
+    var key = String(word).trim();
+    if (WORD_ART[key]) return WORD_ART[key];
+    // 공백/괄호 등 제거하고 재시도
+    var clean = key.replace(/[\s()\[\]]/g, '');
+    if (WORD_ART[clean]) return WORD_ART[clean];
+    // 그래도 못 찾으면 기본 그림 (물음표 대신 꽃)
+    return WORD_ART["꽃이"];
 }
 
 window.addEventListener('load', () => {
